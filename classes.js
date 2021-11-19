@@ -23,10 +23,22 @@ function createCanvas(height, width, canvas) {
     return context
 }
 
+function clean(board) {
+    board.context.clearRect(0, 0, board.width, board.height)
+}
+
 function draw(board) {
     (board.getElements()).forEach(element => {
         drawElement(this.context, element)
     });
+}
+
+function play() {
+    if (board.playing) {
+        clean(board)
+        draw(board)
+        ball.move()
+    }
 }
 
 
@@ -35,6 +47,12 @@ function drawElement(ctx, element) {
         case "rectangle":
             ctx.fillRect(element.x, element.y, element.width, element.height)
             break
+
+        case "circle":
+            ctx.beginPath()
+            ctx.arc(element.x, element.y, element.radius, 0, 7)
+            ctx.fill()
+            ctx.closePath()
     }
 }
 
@@ -50,17 +68,33 @@ class Bar {
         this.speed = 10
     }
 
-    down(){
+    down() {
         this.y += this.speed
     }
 
-    up(){
+    up() {
         this.y -= this.speed
+    }
+
+    toString() {
+        return "x: " + this.x + " y: " + this.y
     }
 }
 
 class Ball {
-    constructor() {
-        
+    constructor(x, y, radius, board) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.speedY = 0
+        this.speedX = 3
+        this.kind = "circle"
+        this.direction = 1
+        board.bars.push(this)
+    }
+
+    move() {
+        this.x += (this.speedX * this.direction)
+        this.y += this.speedY
     }
 }
