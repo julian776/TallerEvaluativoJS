@@ -10,7 +10,7 @@ class Board {
     }
 
     getElements() {
-        let elements = this.bars
+        let elements = this.bars.map(x=> {return x})
         elements.push(ball)
         return elements
     }
@@ -34,6 +34,7 @@ function draw(board) {
 }
 
 function checkCollisions(board){
+    console.log(board.bars)
     board.bars.forEach(x =>{
         hit(x, ball)
     })
@@ -41,14 +42,16 @@ function checkCollisions(board){
 
 function hit(bar, ball){
     validate = false
-    if((bar.x - ball.x) == 0){
+    if(((bar.x - ball.x) == 0) && ((bar.y - ball.y) == 0)){
         ball.direction = ball.direction * (-1)
         validate = true
     }
+    /*
     else if((bar.y - ball.y) == 0){
         ball.direction = ball.direction * (-1)
         validate = true
     }
+    */
     return validate
 }
 
