@@ -11,7 +11,7 @@ class Board {
 
     getElements() {
         let elements = this.bars
-        //elements.push(this.ball)
+        elements.push(ball)
         return elements
     }
 }
@@ -29,8 +29,27 @@ function clean(board) {
 
 function draw(board) {
     (board.getElements()).forEach(element => {
-        drawElement(this.context, element)
+        drawElement(board.context, element)
     });
+}
+
+function checkCollisions(board){
+    board.bars.forEach(x =>{
+        hit(x, ball)
+    })
+}
+
+function hit(bar, ball){
+    validate = false
+    if((bar.x - ball.x) == 0){
+        ball.direction = ball.direction * (-1)
+        validate = true
+    }
+    else if((bar.y - ball.y) == 0){
+        ball.direction = ball.direction * (-1)
+        validate = true
+    }
+    return validate
 }
 
 function play() {
@@ -38,6 +57,7 @@ function play() {
         clean(board)
         draw(board)
         ball.move()
+        checkCollisions(board)
     }
 }
 
@@ -90,7 +110,6 @@ class Ball {
         this.speedX = 3
         this.kind = "circle"
         this.direction = 1
-        board.bars.push(this)
     }
 
     move() {
