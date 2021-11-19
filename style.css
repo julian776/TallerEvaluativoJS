@@ -1,8 +1,22 @@
 .title{
     text-align: center;
-    color: blanchedalmond;
+    color: rgb(37, 36, 36);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 50px;
 }
 
 .body{
     background-color: darkgrey;
+}
+
+.header{
+    font-family: 'Roboto Mono', monospace;
+    color: black;
+    background-color: #e2e1e1;
+    text-align: center;
+    font-size: 150px;
+}
+
+canvas{
+    border: solid;
 }
