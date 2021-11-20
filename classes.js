@@ -34,7 +34,6 @@ function draw(board) {
 }
 
 function checkCollisions(board){
-    console.log(board.bars)
     board.bars.forEach(x =>{
         hit(x, ball)
     })
@@ -42,17 +41,30 @@ function checkCollisions(board){
 
 function hit(bar, ball){
     validate = false
+    console.log((bar.x>=ball.x) && (ball.x <= (bar.x)+bar.width))
+    if((bar.x>=ball.x) && (ball.x <= (bar.x)+bar.width)){
+        validate = true
+    }
+    console.log((bar.y <= ball.y) && (ball.y>=(bar.height+bar.y)))
+    if((bar.Y <= ball.y) && (ball.y>=(bar.height+bar.y))){
+        validate = true
+    }
+    if(validate == true){
+        ball.direction = ball.direction * (-1)
+    }
+    return validate
+    /*
     if(((bar.x - ball.x) == 0) && ((bar.y - ball.y) == 0)){
         ball.direction = ball.direction * (-1)
         validate = true
     }
+    */
     /*
     else if((bar.y - ball.y) == 0){
         ball.direction = ball.direction * (-1)
         validate = true
     }
     */
-    return validate
 }
 
 function play() {
