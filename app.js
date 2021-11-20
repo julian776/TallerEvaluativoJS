@@ -3,7 +3,7 @@ let canv = document.getElementById("canvas")
 let board = new Board(420, 700, canv)
 let barra = new Bar(15, 160, 100, 25, board)
 let barra2 = new Bar(660, 160, 100, 25, board)
-let ball = new Ball(655, 160, 7, board)
+let ball = new Ball(330, 210, 7, board)
 
 //Listeners para los eventos
 document.addEventListener("keydown", ev => {

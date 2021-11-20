@@ -34,45 +34,43 @@ function draw(board) {
 }
 
 function checkCollisions(board){
-    board.bars.forEach(x =>{
-        hit(x, ball)
+    board.bars.forEach(bar =>{
+        console.log(ball.width)
+        if(hit(bar, ball)){
+            console.log("Aca estoy")
+            ball.collision(bar)
+        }
     })
 }
 
-function hit(bar, ball){
-    validate = false
-    console.log((bar.x>=ball.x) && (ball.x <= (bar.x)+bar.width))
-    if((bar.x>=ball.x) && (ball.x <= (bar.x)+bar.width)){
-        validate = true
+function hit(a, b) {
+    //Revisa si a colisiona con b
+    var hit = false;
+    //Colsiones horizontales
+    if (b.x + b.width >= a.x && b.x < a.x + a.width) {
+        //Colisiones verticales
+        if (b.y + b.height >= a.y && b.y < a.y + a.height)
+            hit = true;
     }
-    console.log((bar.y <= ball.y) && (ball.y>=(bar.height+bar.y)))
-    if((bar.Y <= ball.y) && (ball.y>=(bar.height+bar.y))){
-        validate = true
+    //Colisión de a con b
+    if (b.x <= a.x && b.x + b.width >= a.x + a.width) {
+        if (b.y <= a.y && b.y + b.height >= a.y + a.height)
+            hit = true;
     }
-    if(validate == true){
-        ball.direction = ball.direction * (-1)
+    //Colisión b con a
+    if (a.x <= b.x && a.x + a.width >= b.x + b.width) {
+        if (a.y <= b.y && a.y + a.height >= b.y + b.height)
+            hit = true;
     }
-    return validate
-    /*
-    if(((bar.x - ball.x) == 0) && ((bar.y - ball.y) == 0)){
-        ball.direction = ball.direction * (-1)
-        validate = true
-    }
-    */
-    /*
-    else if((bar.y - ball.y) == 0){
-        ball.direction = ball.direction * (-1)
-        validate = true
-    }
-    */
+    return hit;
 }
 
 function play() {
     if (board.playing) {
         clean(board)
         draw(board)
-        ball.move()
         checkCollisions(board)
+        ball.move()
     }
 }
 
@@ -119,16 +117,68 @@ class Bar {
 class Ball {
     constructor(x, y, radius, board) {
         this.x = x
-        this.y = y
-        this.radius = radius
-        this.speedY = 0
-        this.speedX = 3
-        this.kind = "circle"
-        this.direction = 1
+		this.y = y
+		this.radius = radius
+		this.speed_y = 0
+		this.speed_x = 3
+		this.board = board
+		this.direction = 1
+		this.bounce_angle = 0
+		this.max_bounce_angle = Math.PI / 12
+		this.speed = 3
+
+		board.ball = this
+		this.kind = "circle"
     }
 
-    move() {
-        this.x += (this.speedX * this.direction)
-        this.y += this.speedY
+    get width(){
+        return this.radius * 2
+    }
+
+    get height(){
+        return this.radius * 2
+    }
+
+    move(){
+        this.x += (this.speed_x * this.direction)
+        this.y += (this.speed_y)
+
+        if (this.x <= 10) {
+            this.x = 400
+            this.y = 200
+            this.speed_x = -this.speed_x
+            this.bounce_angle = -this.bounce_angle
+        }
+
+        if(this.x >= 790){
+            this.x = 400
+            this.y = 200
+            this.speed_x = -this.speed_x
+            this.bounce_angle = -this.bounce_angle
+        }
+
+        // Collision con paredes horizontales
+        if (this.y <= 10) {
+            this.speed_y = -this.speed_y
+            this.bounce_angle = -this.bounce_angle
+        }
+        if (this.y >= 390) {
+            this.speed_y = -this.speed_y
+            this.bounce_angle = -this.bounce_angle
+        }
+    }
+
+    collision(bar) {
+        // Reacciona a la colisión con una barra que recibe como parametro
+        var relative_intersect_y = (bar.y + (bar.height / 2)) - this.y
+
+        var normalized_intersect_y = relative_intersect_y / (bar.height / 2)
+
+        this.bounce_angle = normalized_intersect_y * this.max_bounce_angle
+        this.speed_y = this.speed * -Math.sin(this.bounce_angle)
+        this.speed_x = this.speed * Math.cos(this.bounce_angle)
+
+        if (this.x > (this.board.width / 2)) this.direction = -1
+        else this.direction = 1
     }
 }
